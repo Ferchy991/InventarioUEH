@@ -16,6 +16,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="../../../plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="../../../css/adminlte/adminlte.min.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="../../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="../../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="../../../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -164,19 +168,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <li class="nav-item">
                   <a href="#" class="nav-link active">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>Nuevo</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Lista</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Buscar</p>
+                    <p>Operaciones</p>
                   </a>
                 </li>
               </ul>
@@ -304,13 +296,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1 class="m-0">Registrar Bodega</h1>
+              <h1 class="m-0">BODEGAS</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="../../index.php">Inicio</a></li>
-                <li class="breadcrumb-item active">Usuarios</li>
-                <li class="breadcrumb-item active">Nuevo</li>
+                <li class="breadcrumb-item active">Bodegas</li>
+                <li class="breadcrumb-item active">Operaciones</li>
               </ol>
             </div><!-- /.col -->
           </div><!-- /.row -->
@@ -322,68 +314,87 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <div class="content">
 
         <!-- Input addon -->
-        <div class="card card-info">
+        <div class="card card-danger">
           <div class="card-header">
-            <h3 class="card-title">Datos del usuario</h3>
+            <h3 class="card-title">Registrar bodega</h3>
           </div>
           <div class="card-body">
             <form action="registrarusuario.php" method="post">
-              <h5>Datos Generales:</h5>
-              <div class="row">
-                <div class="col-lg-6">
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="fas fa-user"></i></span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="Nombre" required name="unombre">
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Apellido" required name="uapellido">
-                  </div>
-                </div>
-              </div>
-              <h5>Datos de acceso</h5>
-              <h6>Usuario:</h6>
+              <h5>Nombre de la bodega:</h5>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                  <span class="input-group-text"><i class="fas fa-warehouse"></i></span>
                 </div>
-                <input type="text" class="form-control" placeholder="Nombre de usuario" required name="usuario">
+                <input type="text" class="form-control" placeholder="Ejemplo: Almacen1" required name="nbodega">
               </div>
-              <h6>Contraseña:</h6>
+              <h5>Ubicación de la bodega</h5>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                  <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
                 </div>
-                <input type="text" class="form-control" placeholder="Contraseña" required name="contra">
+                <input type="text" class="form-control" placeholder="Ejemplo: Aula 32" required name="ubodega">
               </div>
-              <h5>Permisos</h5>
-              <!-- radio -->
-              <div class="row">
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="radio1" value="1" required>
-                      <label class="form-check-label">Administrador</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radio1" value="2" required>
-                    <label class="form-check-label">Empleado</label>
-                  </div>
-                </div>
-              </div>
-              <input type="submit" class="btn btn-block btn-outline-info" name="submit" placeholder="Enviar">
+              <input type="submit" class="btn btn-block btn-outline-danger" name="submit" placeholder="Enviar">
             </form>
           </div>
           <!-- /.card-body -->
         </div>
         <!-- /.card -->
 
+        <div class="card card-danger">
+          <div class="card-header">
+            <h3 class="card-title">Bodegas registradas</h3>
+          </div>
+          <div class="card-body">
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>ID Bodega</th>
+                  <th>Nombre de la Bodega</th>
+                  <th>Ubicacion</th>
+                  <th>Ver productos</th>
+                  <th>Operaciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                require('../../../php/conexion.php');
+                $conn = new mysqli($servername, $username, $password, $dbname);
+
+                if ($conn->connect_error) {
+                  die("La conexion ha fallado: " . $conn->connect_error);
+                }
+                $result = mysqli_query($conn, "SELECT * FROM usuarios ORDER BY idusuario");
+                while ($row = mysqli_fetch_array($result)) {
+                  echo ("<tr>");
+                  echo ("<td>" . $row['idusuario'] . "</td>");
+                  echo ("<td>" . $row['nombre'] . "</td>");
+                  echo ("<td>" . $row['apellido'] . "</td>");
+                  echo ("<td>" . $row['nombreusuario'] . "</td>");
+                  echo ("<td class='text-center'>");
+                  echo ("<div class='btn-group btn-group-sm'>");
+                  echo ("<a href='#' class='btn btn-info'><i class='fas fa-eye'> Editar</i></a>");
+                  echo ("<a href='#' class='btn btn-danger'><i class='fas fa-trash'> Eliminar</i></a>");
+                  echo ("</div>");
+                  echo ("</td>");
+                }
+                mysqli_close($conn);
+                ?>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>ID Bodega</th>
+                  <th>Nombre de la Bodega</th>
+                  <th>Ubicacion</th>
+                  <th>Ver productos</th>
+                  <th>Operaciones</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
 
       </div>
       <!-- /.content -->
@@ -424,14 +435,38 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script src="../../../plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
   <!-- ChartJS -->
   <script src="../../../plugins/chart.js/Chart.min.js"></script>
+
+  <!-- DataTables  & Plugins -->
+  <script src="../../../plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="../../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="../../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="../../../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <script src="../../../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+  <script src="../../../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+  <script src="../../../plugins/jszip/jszip.min.js"></script>
+  <script src="../../../plugins/pdfmake/pdfmake.min.js"></script>
+  <script src="../../../plugins/pdfmake/vfs_fonts.js"></script>
+  <script src="../../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+  <script src="../../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
+  <script src="../../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
   <script>
-    $('.toastsDefaultDanger').click(function() {
-      $(document).Toasts('create', {
-        class: 'bg-danger',
-        title: 'Toast Title',
-        subtitle: 'Subtitle',
-        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
-      })
+    $(function() {
+      $("#example1").DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+      $('#example2').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+      });
     });
   </script>
 </body>
