@@ -344,8 +344,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     echo("<td>".$row['idpermisos']."</td>");
                                     echo("<td class='text-center'>");
                                     echo("<div class='btn-group btn-group-sm'>");
-                                    echo("<a href='#' class='btn btn-info'><i class='fas fa-eye'> Editar</i></a>");       
-                                    echo("<a href='#' class='btn btn-danger'><i class='fas fa-trash'> Eliminar</i></a>");       
+                                    echo("<a href='editar.php?id=".$row['idusuario']."' class='btn btn-info'><i class='fas fa-eye'> Editar</i></a>");       
+                                    echo("<a href='borrar.php?id=".$row['idusuario']."' class='btn btn-danger'><i class='fas fa-trash'> Eliminar</i></a>");       
                                     echo("</div>");    
                                     echo("</td>");
                                 }
