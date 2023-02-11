@@ -1,10 +1,7 @@
 <?php
 
-$nomusuario=$_POST['unombre'];
-$apusuario=$_POST['uapellido'];
-$usuarioact=$_POST['usuario'];
-$contract=$_POST['contra'];
-$permact=$_POST['radio1'];
+$nbodega=$_POST['nbodega'];
+$ubodega=$_POST['ubodega'];
 
 require('../../../php/conexion.php');
 
@@ -14,7 +11,7 @@ if ($conn->connect_error) {
     die("La conexion ha fallado: " . $conn->connect_error);
 }
 
-$sql="UPDATE usuarios SET  nombre='$nomusuario', apellido='$apusuario',nombreusuario='$usuarioact',clave='$contract'";
+$sql="UPDATE bodegas SET  nombrebodega='$nbodega', ubicacionbodega='$ubodega'";
 
 if (mysqli_query($conn, $sql)) {
     echo ("SE HA ACTUALIZADO EL USUARIO CORRECTAMENTE");

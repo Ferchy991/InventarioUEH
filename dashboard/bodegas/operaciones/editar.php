@@ -1,14 +1,13 @@
+<?php
+$idbodega=$_GET['id'];
+?>
 <!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
 <html lang="en">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gestión de Inventarios - Registrar bodega</title>
+  <title>Gestión de Inventarios - Editar bodega</title>
   <link rel="icon" href="../../../assets/img/logo.png">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -302,7 +301,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="../../index.php">Inicio</a></li>
                 <li class="breadcrumb-item active">Bodegas</li>
-                <li class="breadcrumb-item active">Operaciones</li>
+                <li class="breadcrumb-item active">Editar Bodega</li>
               </ol>
             </div><!-- /.col -->
           </div><!-- /.row -->
@@ -316,90 +315,46 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Input addon -->
         <div class="card card-danger">
           <div class="card-header">
-            <h3 class="card-title">Registrar bodega</h3>
+            <h3 class="card-title">Editar bodega</h3>
           </div>
           <div class="card-body">
-            <form action="registrarbodega.php" method="post">
+            <form action="scripteditar.php" method="post">
+                
+                <?php
+                    require('../../../php/conexion.php');
+                    $conn = new mysqli($servername, $username, $password, $dbname);
+                    if ($conn->connect_error) {
+                        die("La conexion ha fallado: " . $conn->connect_error);
+                    }
+                    $sql="SELECT * FROM bodegas WHERE idbodega=$idbodega";  
+                    $result=mysqli_query($conn, $sql);
+                    
+                    while($row = mysqli_fetch_array($result)){
+                ?>  
               <h5>Nombre de la bodega:</h5>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="fas fa-warehouse"></i></span>
                 </div>
-                <input type="text" class="form-control" placeholder="Ejemplo: Almacen1" required name="nbodega">
+                <input type="text" class="form-control" placeholder="Ejemplo: Almacen1" required name="nbodega" value="<?php echo $row['nombrebodega'];?>">
               </div>
               <h5>Ubicación de la bodega</h5>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
                 </div>
-                <input type="text" class="form-control" placeholder="Ejemplo: Aula 32" required name="ubodega">
+                <input type="text" class="form-control" placeholder="Ejemplo: Aula 32" required name="ubodega" value="<?php echo $row['ubicacionbodega'];?>">
               </div>
               <input type="submit" class="btn btn-block btn-outline-danger" name="submit" placeholder="Enviar">
+                <?php
+                    }
+                    mysqli_close($conn);
+                ?>
             </form>
           </div>
           <!-- /.card-body -->
         </div>
         <!-- /.card -->
-
-        <div class="card card-danger">
-          <div class="card-header">
-            <h3 class="card-title">Bodegas registradas</h3>
-          </div>
-          <div class="card-body">
-            <table id="example1" class="table table-bordered table-striped">
-              <thead>
-                <tr>
-                  <th>ID Bodega</th>
-                  <th>Nombre de la Bodega</th>
-                  <th>Ubicacion</th>
-                  <th>Ver productos</th>
-                  <th>Operaciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php
-                require('../../../php/conexion.php');
-                $conn = new mysqli($servername, $username, $password, $dbname);
-
-                if ($conn->connect_error) {
-                  die("La conexion ha fallado: " . $conn->connect_error);
-                }
-                $result = mysqli_query($conn, "SELECT * FROM bodegas ORDER BY idbodega");
-                while ($row = mysqli_fetch_array($result)) {
-                  echo ("<tr>");
-                  echo ("<td>" . $row['idbodega'] . "</td>");
-                  echo ("<td>" . $row['nombrebodega'] . "</td>");
-                  echo ("<td>" . $row['ubicacionbodega'] . "</td>");
-                  echo ("<td class='text-center'>");
-                  echo ("<div class='btn-group btn-group-sm'>");
-                  echo ("<a href='#' class='btn btn-success'><i class='fas fa-eye'> Productos</i></a>");
-                  echo ("</div>");
-                  echo ("</td>");
-                  echo ("<td class='text-center'>");
-                  echo ("<div class='btn-group btn-group-sm'>");
-                  echo ("<a href='editar.php?id=".$row['idbodega']."' class='btn btn-info'><i class='fas fa-eye'> Editar</i></a>");
-                  echo ("<a href='borrar.php?id=".$row['idbodega']."' class='btn btn-danger'><i class='fas fa-trash'> Eliminar</i></a>");
-                  echo ("</div>");
-                  echo ("</td>");
-                }
-                mysqli_close($conn);
-                ?>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>ID Bodega</th>
-                  <th>Nombre de la Bodega</th>
-                  <th>Ubicacion</th>
-                  <th>Ver productos</th>
-                  <th>Operaciones</th>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-          <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-
       </div>
       <!-- /.content -->
     </div>
