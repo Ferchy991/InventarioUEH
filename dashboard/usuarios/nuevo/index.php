@@ -214,7 +214,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-boxes"></i>
                 <p>
-                  Productos
+                  Inventario
                   <i class="right fas fa-angle-left"></i>
                 </p>
               </a>
@@ -222,25 +222,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <li class="nav-item">
                   <a href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>Nuevo</p>
+                    <p>A la venta</p>
                   </a>
                 </li>
                 <li class="nav-item">
                   <a href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>Lista</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Por categoría</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Buscar</p>
+                    <p>Institucional</p>
                   </a>
                 </li>
               </ul>

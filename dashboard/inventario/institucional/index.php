@@ -8,7 +8,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gestión de Inventarios - Lista de usuarios</title>
+    <title>Gestión de Inventarios - Inventario Institucional</title>
     <link rel="icon" href="../../../assets/img/logo.png">
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -16,10 +16,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="../../../plugins/fontawesome-free/css/all.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="../../../css/adminlte/adminlte.min.css">
-    <!-- DataTables -->
-    <link rel="stylesheet" href="../../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="../../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-    <link rel="stylesheet" href="../../../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -133,8 +129,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </p>
                             </a>
                         </li>
-                        <li class="nav-item  menu-open">
-                            <a href="#" class="nav-link active">
+                        <li class="nav-item ">
+                            <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-users"></i>
                                 <p>
                                     Usuarios
@@ -143,13 +139,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="../nuevo/index.php" class="nav-link">
+                                    <a href="usuarios/nuevo/index.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Nuevo</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../lista/index.php" class="nav-link active">
+                                    <a href="../lista/index.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Lista</p>
                                     </a>
@@ -160,7 +156,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-tasks"></i>
                                 <p>
-                                    bodegas
+                                    Bodegas
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -214,8 +210,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
+                        <li class="nav-item menu-open">
+                            <a href="#" class="nav-link active">
                                 <i class="nav-icon fas fa-boxes"></i>
                                 <p>
                                     Inventario
@@ -230,7 +226,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="#" class="nav-link active">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Institucional</p>
                                     </a>
@@ -284,13 +280,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Lista de usuarios</h1>
+                            <h1 class="m-0">Inventario Institucional</h1>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="../../index.php">Inicio</a></li>
-                                <li class="breadcrumb-item active">Usuarios</li>
-                                <li class="breadcrumb-item active">Lista</li>
+                                <li class="breadcrumb-item active">Inventario</li>
+                                <li class="breadcrumb-item active">Institucional</li>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -301,56 +297,67 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <!-- Main content -->
             <div class="content">
 
-                <div class="card">
+                <!-- Input addon -->
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">Registrar producto</h3>
+                    </div>
                     <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID Usuario</th>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Usuario</th>
-                                    <th>Rol</th>
-                                    <th>Operaciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                require('../../../php/conexion.php');
-                                $conn = new mysqli($servername, $username, $password, $dbname);
+                        <form action="registrarusuario.php" method="post">
+                            <h5>Datos del producto:</h5>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-file-signature"></i></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Nombre del producto" required name="unombre">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-file"></i></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Descripcion (70 caracteres máximo)" required name="uapellido">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Código de barras o Etiqueta" required name="uapellido">
+                            </div>
 
-                                if ($conn->connect_error) {
-                                    die("La conexion ha fallado: " . $conn->connect_error);
-                                }
-                                $result = mysqli_query($conn, "SELECT * FROM usuarios ORDER BY idusuario");
-                                while ($row = mysqli_fetch_array($result)) {
-                                    echo ("<tr>");
-                                    echo ("<td>" . $row['idusuario'] . "</td>");
-                                    echo ("<td>" . $row['nombre'] . "</td>");
-                                    echo ("<td>" . $row['apellido'] . "</td>");
-                                    echo ("<td>" . $row['nombreusuario'] . "</td>");
-                                    echo ("<td>" . $row['idpermisos'] . "</td>");
-                                    echo ("<td class='text-center'>");
-                                    echo ("<div class='btn-group btn-group-sm'>");
-                                    echo ("<a href='editar.php?id=" . $row['idusuario'] . "' class='btn btn-info'><i class='fas fa-eye'> Editar</i></a>");
-                                    echo ("<a href='borrar.php?id=" . $row['idusuario'] . "' class='btn btn-danger'><i class='fas fa-trash'> Eliminar</i></a>");
-                                    echo ("</div>");
-                                    echo ("</td>");
-                                }
-                                mysqli_close($conn);
-                                ?>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>ID Usuario</th>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Usuario</th>
-                                    <th>Rol</th>
-                                    <th>Operaciones</th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                            <div class="col-sm-12">
+                                <!-- select -->
+                                <div class="form-group">
+                                    <label>Ubicación(Bodega)</label>
+                                    <select class="form-control">
+                                        <option>Slecciona una opción...</option>
+                                        <option>option 2</option>
+                                        <option>option 3</option>
+                                        <option>option 4</option>
+                                        <option>option 5</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-cubes"></i></span>
+                                        </div>
+                                        <input type="number" class="form-control" placeholder="Stock inicial" required name="uapellido">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="customFile">
+                                            <label class="custom-file-label" for="customFile">Subir Imagen...</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="submit" class="btn btn-block btn-outline-success" name="submit" placeholder="Registrar">
+                        </form>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -394,38 +401,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="../../../js/adminlte/adminlte.min.js"></script>
     <!-- overlayScrollbars -->
     <script src="../../../plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-
-    <!-- DataTables  & Plugins -->
-    <script src="../../../plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="../../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="../../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="../../../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="../../../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="../../../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="../../../plugins/jszip/jszip.min.js"></script>
-    <script src="../../../plugins/pdfmake/pdfmake.min.js"></script>
-    <script src="../../../plugins/pdfmake/vfs_fonts.js"></script>
-    <script src="../../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="../../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="../../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-
+    <!-- ChartJS -->
+    <script src="../../../plugins/chart.js/Chart.min.js"></script>
+    <!-- bs-custom-file-input -->
+    <script src="../../../plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
     <script>
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
+        $('.toastsDefaultDanger').click(function() {
+            $(document).Toasts('create', {
+                class: 'bg-danger',
+                title: 'Toast Title',
+                subtitle: 'Subtitle',
+                body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+            })
         });
     </script>
 </body>
