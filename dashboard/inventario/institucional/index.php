@@ -303,37 +303,47 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <h3 class="card-title">Registrar producto</h3>
                     </div>
                     <div class="card-body">
-                        <form action="registrarusuario.php" method="post">
+                        <form action="registrarproducto.php" method="post" enctype="multipart/form-data">
                             <h5>Datos del producto:</h5>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-file-signature"></i></span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Nombre del producto" required name="unombre">
+                                <input type="text" class="form-control" placeholder="Nombre del producto" required name="pnombre">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-file"></i></span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Descripcion (70 caracteres máximo)" required name="uapellido">
+                                <input type="text" class="form-control" placeholder="Descripcion (70 caracteres máximo)" required name="pdescripcion">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-barcode"></i></span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Código de barras o Etiqueta" required name="uapellido">
+                                <input type="text" class="form-control" placeholder="Código de barras o Etiqueta" required name="pcodigo">
                             </div>
+
 
                             <div class="col-sm-12">
                                 <!-- select -->
                                 <div class="form-group">
                                     <label>Ubicación(Bodega)</label>
-                                    <select class="form-control">
-                                        <option>Slecciona una opción...</option>
-                                        <option>option 2</option>
-                                        <option>option 3</option>
-                                        <option>option 4</option>
-                                        <option>option 5</option>
+                                    <select class="form-control" name="pbodega" required>
+                                        <option disabled selected>Selecciona una opción...</option>
+                                        <?php
+                                        require('../../../php/conexion.php');
+                                        $conn = new mysqli($servername, $username, $password, $dbname);
+
+                                        if ($conn->connect_error) {
+                                            die("La conexion ha fallado: " . $conn->connect_error);
+                                        }
+                                        $result = mysqli_query($conn, "SELECT * FROM bodegas");
+                                        while ($row = mysqli_fetch_array($result)) {
+                                            echo ("<option value=" . $row['idbodega'] . ">" . $row['nombrebodega'] . "</option>");
+                                        }
+                                        mysqli_close($conn);
+                                        ?>
                                     </select>
                                 </div>
                             </div>
@@ -344,13 +354,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-cubes"></i></span>
                                         </div>
-                                        <input type="number" class="form-control" placeholder="Stock inicial" required name="uapellido">
+                                        <input type="number" class="form-control" placeholder="Stock inicial" required name="pstock">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="customFile">
+                                            <input type="file" class="custom-file-input" id="archivo" name="archivo" required>
                                             <label class="custom-file-label" for="customFile">Subir Imagen...</label>
                                         </div>
                                     </div>
@@ -406,13 +416,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- bs-custom-file-input -->
     <script src="../../../plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
     <script>
-        $('.toastsDefaultDanger').click(function() {
-            $(document).Toasts('create', {
-                class: 'bg-danger',
-                title: 'Toast Title',
-                subtitle: 'Subtitle',
-                body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
-            })
+        $(function() {
+            bsCustomFileInput.init();
         });
     </script>
 </body>
