@@ -10,28 +10,28 @@ if (isset($_POST["submit"])) {
         die("La conexion ha fallado: " . $conn->connect_error);
     }
 
+    
     $nombreproducto = $_POST['pnombre'];
     $descripcionproducto = $_POST['pdescripcion'];
     $codigoproducto = $_POST['pcodigo'];
     $ubicacionproducto = $_POST['pbodega'];
     $stockproducto = $_POST['pstock'];
+    $rutacodigo='barcode.php?codetype=Code128&size=50&text='.$codigoproducto.'&print=true';
 
-    $target_dir = "../../../assets/i_institucional/";
-    $target_file = $target_dir . basename($_FILES["archivo"]["name"]);
+    $taget_dir_img = "../../../assets/i_institucional/";
+    $target_file = $taget_dir_img . basename($_FILES["archivo"]["name"]);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
     // Check if image file is a actual image or fake image
-    if (isset($_POST["submit"])) {
         $check = getimagesize($_FILES["archivo"]["tmp_name"]);
         if ($check !== false) {
-            echo "File is an image - " . $check["mime"] . ".";
             $uploadOk = 1;
         } else {
             echo "File is not an image.";
             $uploadOk = 0;
         }
-    }
+    
 
     // Check if file already exists
     if (file_exists($target_file)) {
@@ -59,16 +59,15 @@ if (isset($_POST["submit"])) {
         // if everything is ok, try to upload file
     } else {
         if (move_uploaded_file($_FILES["archivo"]["tmp_name"], $target_file)) {
-            $sql = "INSERT INTO inventario_institucional(nombreproducto,descripcionproducto,codigoproducto,idbodega,stock,rutaimg) VALUES 
-            ('$nombreproducto','$descripcionproducto','$codigoproducto','$ubicacionproducto','$stockproducto','$target_file')";
+            $sql = "INSERT INTO inventario_institucional(nombreproducto,descripcionproducto,codigoproducto,imgcodigo,idbodega,stock,rutaimg) VALUES 
+            ('$nombreproducto','$descripcionproducto','$codigoproducto','$rutacodigo','$ubicacionproducto','$stockproducto','$target_file')";
 
             if (mysqli_query($conn, $sql)) {
-                header("location: index.php");
+                echo "<center><img alt='testing' src='barcode.php?codetype=code39&size=50&text=".$codigoproducto."&print=true'/></center>";
             } else {
                 echo "Error: " . $sql . "" . mysqli_error($conn);
             }
             $conn->close();
-            echo "The file " . htmlspecialchars(basename($_FILES["archivo"]["name"])) . " has been uploaded.";
         } else {
             echo "Sorry, there was an error uploading your file.";
         }

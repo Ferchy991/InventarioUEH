@@ -1,3 +1,6 @@
+<?php
+$idproducto = $_GET['id'];
+?>
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -304,132 +307,99 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <!-- Input addon -->
                 <div class="card card-success">
                     <div class="card-header">
-                        <h3 class="card-title">Registrar producto</h3>
+                        <h3 class="card-title">Editar producto</h3>
                     </div>
                     <div class="card-body">
-                        <form method="post" enctype="multipart/form-data">
-                            <h5>Datos del producto:</h5>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-file-signature"></i></span>
+                        <form action="scripteditar.php" method="post" enctype="multipart/form-data">
+                            <?php
+                            require('../../../php/conexion.php');
+                            $conn = new mysqli($servername, $username, $password, $dbname);
+                            if ($conn->connect_error) {
+                                die("La conexion ha fallado: " . $conn->connect_error);
+                            }
+                            $sql = "SELECT * FROM inventario_institucional WHERE idproducto=$idproducto";
+                            $result = mysqli_query($conn, $sql);
+
+                            while ($row = mysqli_fetch_array($result)) {
+                            ?>
+                                <h5>Datos del producto:</h5>
+                                <h6>Nombre del producto:</h6>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-file-signature"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Nombre del producto" required name="pnombre" value="<?php echo $row['nombreproducto']; ?>">
                                 </div>
-                                <input type="text" class="form-control" placeholder="Nombre del producto" required name="pnombre">
-                            </div>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-file"></i></span>
+                                <h6>Descripción del producto:</h6>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-file"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Descripcion (70 caracteres máximo)" required name="pdescripcion" value="<?php echo $row['descripcionproducto']; ?>">
                                 </div>
-                                <input type="text" class="form-control" placeholder="Descripcion (70 caracteres máximo)" required name="pdescripcion">
-                            </div>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                <h6>Código de barras o etiqueta:</h6>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Código de barras o Etiqueta" required name="pcodigo" value="<?php echo $row['codigoproducto'] ?>">
+                                    <br>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Código de barras o Etiqueta" required name="pcodigo">
-                            </div>
+                                <?php echo "<center><img alt='testing' src='barcode.php?codetype=code39&size=50&text=" . $row['codigoproducto'] . "&print=true'/></center>"; ?>
 
 
-                            <div class="col-sm-12">
-                                <!-- select -->
-                                <div class="form-group">
-                                    <label>Ubicación(Bodega)</label>
-                                    <select class="form-control" name="pbodega" required>
-                                        <option disabled selected>Selecciona una opción...</option>
-                                        <?php
-                                        require('../../../php/conexion.php');
-                                        $conn = new mysqli($servername, $username, $password, $dbname);
-
-                                        if ($conn->connect_error) {
-                                            die("La conexion ha fallado: " . $conn->connect_error);
-                                        }
-                                        $result = mysqli_query($conn, "SELECT * FROM bodegas");
-                                        while ($row = mysqli_fetch_array($result)) {
-                                            echo ("<option value=" . $row['idbodega'] . ">" . $row['nombrebodega'] . "</option>");
-                                        }
-                                        mysqli_close($conn);
-                                        ?>
-                                    </select>
+                                <div class="col-sm-12">
+                                    <!-- select -->
+                                    <div class="form-group">
+                                        <label>Ubicación(Bodega)</label>
+                                        <select class="form-control" name="pbodega" required>
+                                            <?php
+                                            $result2 = mysqli_query($conn, "SELECT * FROM bodegas");
+                                            while ($row2 = mysqli_fetch_array($result2)) {
+                                                echo "<option selected value=" . $row2['idbodega'] . ">" . $row2['nombrebodega'] . "</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-sm-6">
+                                <h6>Stock de productos:</h6>
+                                <div class="col-sm">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-cubes"></i></span>
                                         </div>
-                                        <input type="number" class="form-control" placeholder="Stock inicial" required name="pstock">
+                                        <input type="number" class="form-control" placeholder="Stock inicial" required name="pstock" value="<?php echo $row['stock']; ?>">
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="archivo" name="archivo" required>
-                                            <label class="custom-file-label" for="customFile">Subir Imagen...</label>
+                                <br>
+                                <center>
+                                    <h6>Propiedades de imagen:</h6>
+                                </center>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group" style="margin-top:50px;">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="archivo" name="archivo">
+                                                <label class="custom-file-label" for="customFile"><?php echo $row['rutaimg'];?></label>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="col-sm-6 text-center">
+                                        <h6>Imagen actual:</h6>
+                                        <img src="<?php echo $row['rutaimg']; ?>" alt="" style="border-style: solid; width:100px; height:120px;">
+                                    </div>
                                 </div>
-                            </div>
-                            <input type="submit" class="btn btn-block btn-outline-success" name="submit" placeholder="Registrar">
-                            <br>
+                                <br>
+
+
+                                <input type="submit" class="btn btn-block btn-outline-success" name="submit" placeholder="Registrar">
+                                <br>
                             <?php
-                            include 'registrarproducto.php';
+                            }
+                            mysqli_close($conn);
                             ?>
                         </form>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-                <div class="card card-success">
-                    <div class="card-header">
-                        <h3 class="card-title">Productos Registrados</h3>
-                    </div>
-                    <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID Producto</th>
-                                    <th>Nombre del producto</th>
-                                    <th>Bodega</th>
-                                    <th>Stock</th>
-                                    <th>Operaciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                require('../../../php/conexion.php');
-                                $conn = new mysqli($servername, $username, $password, $dbname);
-
-                                if ($conn->connect_error) {
-                                    die("La conexion ha fallado: " . $conn->connect_error);
-                                }
-                                $result = mysqli_query($conn, "SELECT * FROM inventario_institucional INNER JOIN bodegas ON inventario_institucional.idbodega = bodegas.idbodega ORDER BY idproducto;");
-                                while ($row = mysqli_fetch_array($result)) {
-                                    echo ("<tr>");
-                                    echo ("<td>" . $row['idproducto'] . "</td>");
-                                    echo ("<td>" . $row['nombreproducto'] . "</td>");
-                                    echo ("<td>" . $row['nombrebodega'] . "</td>");
-                                    echo ("<td>" . $row['stock'] . "</td>");
-                                    echo ("<td class='text-center'>");
-                                    echo ("<div class='btn-group btn-group-sm'>");
-                                    echo ("<a href='editar.php?id=" . $row['idproducto'] . "' class='btn btn-info'><i class='fas fa-eye'> Editar</i></a>");
-                                    echo ("<a href='borrar.php?id=" . $row['idproducto'] . "' class='btn btn-danger'><i class='fas fa-trash'> Eliminar</i></a>");
-                                    echo ("</div>");
-                                    echo ("</td>");
-                                }
-                                mysqli_close($conn);
-                                ?>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>ID Producto</th>
-                                    <th>Nombre del producto</th>
-                                    <th>Bodega</th>
-                                    <th>Stock</th>
-                                    <th>Operaciones</th>
-                                </tr>
-                            </tfoot>
-                        </table>
                     </div>
                     <!-- /.card-body -->
                 </div>
