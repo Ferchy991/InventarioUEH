@@ -1,10 +1,14 @@
 <?php
-$nombreprodact = $_POST['pnombre'];
-$descprodact = $_POST['pdescripcion'];
-$codprodact = $_POST['pcodigo'];
-$bodegact = $_POST['pbodega'];
-$stockact = $_POST['pstock'];
-$rutacodigoact = 'barcode.php?codetype=Code128&size=50&text=' . $codprodact . '&print=true';
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
+$idproducto=$_GET['id'];
+$nombreprodact = $_POST['pnombreact'];
+$descprodact = $_POST['pdescripcionact'];
+$codprodact = $_POST['pcodigoact'];
+$bodegact = $_POST['pbodegact'];
+$stockact = $_POST['pstockact'];
+$rutacodigoact = '../../../php/barcode.php?codetype=Code128&size=50&text=' . $codprodact . '&print=true';
 
 require('../../../php/conexion.php');
 
@@ -14,14 +18,14 @@ if ($conn->connect_error) {
     die("La conexion ha fallado: " . $conn->connect_error);
 }
 
-if($_FILES["archivo"]["name"]!=""){
+if($_FILES["archivoact"]["size"]!=0){
     $taget_dir_img = "../../../assets/i_institucional/";
-    $target_file = $taget_dir_img . basename($_FILES["archivo"]["name"]);
+    $target_file = $taget_dir_img . basename($_FILES["archivoact"]["name"]);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
     
     // Check if image file is a actual image or fake image
-    $check = getimagesize($_FILES["archivo"]["tmp_name"]);
+    $check = getimagesize($_FILES["archivoact"]["tmp_name"]);
     if ($check !== false) {
         $uploadOk = 1;
     } else {
@@ -56,12 +60,19 @@ if($_FILES["archivo"]["name"]!=""){
 // Check if $uploadOk is set to 0 by an error
 if ($uploadOk == 0) {
     $sql = "UPDATE inventario_institucional SET nombreproducto='$nombreprodact',descripcionproducto='$descprodact',codigoproducto='$codprodact',
-        imgcodigo='$rutacodigoact',idbodega='$bodegact',stock='$stockact'";
+        imgcodigo='$rutacodigoact',idbodega='$bodegact',stock='$stockact' WHERE idproducto=$idproducto";
+    if (mysqli_query($conn, $sql)) {
+        echo ("SE HA ACTUALIZADO EL USUARIO CORRECTAMENTE");
+        header("location: index.php");
+    } else {
+        echo "Error: " . $sql . "" . mysqli_error($conn);
+    }
+    $conn->close();
     // if everything is ok, try to upload file
 } else {
-    if (move_uploaded_file($_FILES["archivo"]["tmp_name"], $target_file)) {
+    if (move_uploaded_file($_FILES["archivoact"]["tmp_name"], $target_file)) {
         $sql = "UPDATE inventario_institucional SET nombreproducto='$nombreprodact',descripcionproducto='$descprodact',codigoproducto='$codprodact',
-        imgcodigo='$rutacodigoact',idbodega='$bodegact',stock='$stockact',rutaimg='$rutaimgact'";
+        imgcodigo='$rutacodigoact',idbodega='$bodegact',stock='$stockact',rutaimg='$target_file' WHERE idproducto=$idproducto";
 
         if (mysqli_query($conn, $sql)) {
             echo ("SE HA ACTUALIZADO EL USUARIO CORRECTAMENTE");

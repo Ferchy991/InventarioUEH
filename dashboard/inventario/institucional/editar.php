@@ -310,7 +310,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <h3 class="card-title">Editar producto</h3>
                     </div>
                     <div class="card-body">
-                        <form action="scripteditar.php" method="post" enctype="multipart/form-data">
+                        <form action="scripteditar.php?id=<?php echo $idproducto?>" method="post" enctype="multipart/form-data">
                             <?php
                             require('../../../php/conexion.php');
                             $conn = new mysqli($servername, $username, $password, $dbname);
@@ -328,31 +328,31 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fas fa-file-signature"></i></span>
                                     </div>
-                                    <input type="text" class="form-control" placeholder="Nombre del producto" required name="pnombre" value="<?php echo $row['nombreproducto']; ?>">
+                                    <input type="text" class="form-control" placeholder="Nombre del producto" required name="pnombreact" value="<?php echo $row['nombreproducto']; ?>">
                                 </div>
                                 <h6>Descripción del producto:</h6>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fas fa-file"></i></span>
                                     </div>
-                                    <input type="text" class="form-control" placeholder="Descripcion (70 caracteres máximo)" required name="pdescripcion" value="<?php echo $row['descripcionproducto']; ?>">
+                                    <input type="text" class="form-control" placeholder="Descripcion (70 caracteres máximo)" required name="pdescripcionact" value="<?php echo $row['descripcionproducto']; ?>">
                                 </div>
                                 <h6>Código de barras o etiqueta:</h6>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fas fa-barcode"></i></span>
                                     </div>
-                                    <input type="text" class="form-control" placeholder="Código de barras o Etiqueta" required name="pcodigo" value="<?php echo $row['codigoproducto'] ?>">
+                                    <input type="text" class="form-control" placeholder="Código de barras o Etiqueta" required name="pcodigoact" value="<?php echo $row['codigoproducto'] ?>">
                                     <br>
                                 </div>
-                                <?php echo "<center><img alt='testing' src='barcode.php?codetype=code39&size=50&text=" . $row['codigoproducto'] . "&print=true'/></center>"; ?>
+                                <?php echo "<center><img alt='testing' src='../../../php/barcode.php?codetype=code39&size=50&text=" . $row['codigoproducto'] . "&print=true'/></center>"; ?>
 
 
                                 <div class="col-sm-12">
                                     <!-- select -->
                                     <div class="form-group">
                                         <label>Ubicación(Bodega)</label>
-                                        <select class="form-control" name="pbodega" required>
+                                        <select class="form-control" name="pbodegact" required>
                                             <?php
                                             $result2 = mysqli_query($conn, "SELECT * FROM bodegas");
                                             while ($row2 = mysqli_fetch_array($result2)) {
@@ -369,7 +369,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-cubes"></i></span>
                                         </div>
-                                        <input type="number" class="form-control" placeholder="Stock inicial" required name="pstock" value="<?php echo $row['stock']; ?>">
+                                        <input type="number" class="form-control" placeholder="Stock inicial" required name="pstockact" value="<?php echo $row['stock']; ?>">
                                     </div>
                                 </div>
                                 <br>
@@ -380,7 +380,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="col-sm-6">
                                         <div class="form-group" style="margin-top:50px;">
                                             <div class="custom-file">
-                                                <input type="file" class="custom-file-input" id="archivo" name="archivo">
+                                                <input type="file" class="custom-file-input" id="archivoact" name="archivoact">
                                                 <label class="custom-file-label" for="customFile"><?php echo $row['rutaimg'];?></label>
                                             </div>
                                         </div>

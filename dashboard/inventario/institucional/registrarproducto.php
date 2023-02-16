@@ -16,7 +16,7 @@ if (isset($_POST["submit"])) {
     $codigoproducto = $_POST['pcodigo'];
     $ubicacionproducto = $_POST['pbodega'];
     $stockproducto = $_POST['pstock'];
-    $rutacodigo='barcode.php?codetype=Code128&size=50&text='.$codigoproducto.'&print=true';
+    $rutacodigo='../../../barcode.php?codetype=Code128&size=50&text='.$codigoproducto.'&print=true';
 
     $taget_dir_img = "../../../assets/i_institucional/";
     $target_file = $taget_dir_img . basename($_FILES["archivo"]["name"]);
@@ -63,7 +63,7 @@ if (isset($_POST["submit"])) {
             ('$nombreproducto','$descripcionproducto','$codigoproducto','$rutacodigo','$ubicacionproducto','$stockproducto','$target_file')";
 
             if (mysqli_query($conn, $sql)) {
-                echo "<center><img alt='testing' src='barcode.php?codetype=code39&size=50&text=".$codigoproducto."&print=true'/></center>";
+                echo "<center><img alt='testing' src='../../../php/barcode.php?codetype=code39&size=50&text=".$codigoproducto."&print=true'/></center>";
             } else {
                 echo "Error: " . $sql . "" . mysqli_error($conn);
             }

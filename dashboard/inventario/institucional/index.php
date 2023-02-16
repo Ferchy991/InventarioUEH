@@ -1,3 +1,31 @@
+<?php
+                // Verifica que se ha enviado el formulario y que se ha especificado un archivo para descargar
+                if (isset($_POST['descargar']) && !empty($_POST['plantilla'])) {
+                    // Obtiene la ubicación del archivo
+                    $file = $_POST['plantilla'];
+
+                    // Verifica que el archivo exista y sea accesible para la descarga
+                    if (file_exists($file)) {
+                        // Establece las cabeceras HTTP necesarias para que el navegador entienda que se está descargando un archivo
+                        header('Content-Description: File Transfer');
+                        header('Content-Type: application/octet-stream');
+                        header('Content-Disposition: attachment; filename=' . basename($file));
+                        header('Content-Transfer-Encoding: binary');
+                        header('Expires: 0');
+                        header('Cache-Control: must-revalidate');
+                        header('Pragma: public');
+                        header('Content-Length: ' . filesize($file));
+
+                        // Lee y envía el archivo al navegador
+                        readfile($file);
+                        exit;
+                    } else {
+                        // Si el archivo no existe, muestra un mensaje de error
+                        echo "El archivo no se encuentra disponible para descargar.";
+                    }
+                }
+                ?>
+
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -380,12 +408,38 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <!-- /.card-body -->
                 </div>
                 <!-- /.card -->
+
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">Alta Masiva de productos</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <form method="post">
+                                <input type="hidden" name="plantilla" value="../../../assets/plantillas/subirproductoinstitucional.xlsx">
+                                <button type="submit" class="btn btn-outline-success btn-block btn-flat" name="descargar"><i class="fas fa-download"></i> Descargar plantilla...</button>
+                                </form>
+                            </div>
+                            <div class="col-md-6">
+                                <form action="altamasiva.php" method="post" enctype="multipart/form-data">
+                                <input type="file" name="subirarchivo">
+                                <button type="submit" class="btn btn-outline-success btn-block btn-flat"><i class="fas fa-upload"></i> Cargar archivo...</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+
                 <div class="card card-success">
                     <div class="card-header">
                         <h3 class="card-title">Productos Registrados</h3>
                     </div>
                     <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
+                        <table id="example1" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>ID Producto</th>
