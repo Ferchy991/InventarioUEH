@@ -171,13 +171,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="usuarios/nuevo/index.php" class="nav-link">
+                                    <a href="../../usuarios/nuevo/index.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Nuevo</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../lista/index.php" class="nav-link">
+                                    <a href="../../usuarios/lista/index.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Lista</p>
                                     </a>
@@ -252,7 +252,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="../venta/index.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>A la venta</p>
                                     </a>

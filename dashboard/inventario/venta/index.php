@@ -1,3 +1,31 @@
+<?php
+// Verifica que se ha enviado el formulario y que se ha especificado un archivo para descargar
+if (isset($_POST['descargar']) && !empty($_POST['plantilla'])) {
+    // Obtiene la ubicación del archivo
+    $file = $_POST['plantilla'];
+
+    // Verifica que el archivo exista y sea accesible para la descarga
+    if (file_exists($file)) {
+        // Establece las cabeceras HTTP necesarias para que el navegador entienda que se está descargando un archivo
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename=' . basename($file));
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($file));
+
+        // Lee y envía el archivo al navegador
+        readfile($file);
+        exit;
+    } else {
+        // Si el archivo no existe, muestra un mensaje de error
+        echo "El archivo no se encuentra disponible para descargar.";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -8,7 +36,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gestión de Inventarios - Lista de usuarios</title>
+    <title>Gestión de Inventarios - Inventario Institucional</title>
     <link rel="icon" href="../../../assets/img/logo.png">
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -68,7 +96,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
-                        <span class="badge badge-warning navbar-badge">15</span>
+                        <span class="badge badge-primary navbar-badge">15</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                         <span class="dropdown-header">15 Notifications</span>
@@ -133,8 +161,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </p>
                             </a>
                         </li>
-                        <li class="nav-item  menu-open">
-                            <a href="#" class="nav-link active">
+                        <li class="nav-item ">
+                            <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-users"></i>
                                 <p>
                                     Usuarios
@@ -143,13 +171,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="../nuevo/index.php" class="nav-link">
+                                    <a href="usuarios/nuevo/index.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Nuevo</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../lista/index.php" class="nav-link active">
+                                    <a href="../lista/index.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Lista</p>
                                     </a>
@@ -160,7 +188,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-tasks"></i>
                                 <p>
-                                    bodegas
+                                    Bodegas
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -214,8 +242,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
+                        <li class="nav-item menu-open">
+                            <a href="#" class="nav-link active">
                                 <i class="nav-icon fas fa-boxes"></i>
                                 <p>
                                     Inventario
@@ -224,13 +252,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="../../inventario/venta/index.php" class="nav-link">
+                                    <a href="#" class="nav-link active">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>A la venta</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../../inventario/institucional/index.php" class="nav-link">
+                                    <a href="../institucional/index.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Institucional</p>
                                     </a>
@@ -284,13 +312,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Lista de usuarios</h1>
+                            <h1 class="m-0">Inventario para venta</h1>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="../../index.php">Inicio</a></li>
-                                <li class="breadcrumb-item active">Usuarios</li>
-                                <li class="breadcrumb-item active">Lista</li>
+                                <li class="breadcrumb-item active">Inventario</li>
+                                <li class="breadcrumb-item active">Venta</li>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -301,16 +329,181 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <!-- Main content -->
             <div class="content">
 
-                <div class="card">
+                <!-- Input addon -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Registrar producto</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            <h5>Datos del producto:</h5>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-file-signature"></i></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Nombre del producto" required name="pnombre">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-file"></i></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Descripcion (70 caracteres máximo)" required name="pdescripcion">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Código de barras o Etiqueta" required name="pcodigo">
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <!-- select -->
+                                    <div class="form-group">
+                                        <label>Ubicación(Bodega)</label>
+                                        <select class="form-control" name="pbodega" required>
+                                            <option disabled selected>Selecciona una opción...</option>
+                                            <?php
+                                            require('../../../php/conexion.php');
+                                            $conn = new mysqli($servername, $username, $password, $dbname);
+
+                                            if ($conn->connect_error) {
+                                                die("La conexion ha fallado: " . $conn->connect_error);
+                                            }
+                                            $result = mysqli_query($conn, "SELECT * FROM bodegas");
+                                            while ($row = mysqli_fetch_array($result)) {
+                                                echo ("<option value=" . $row['idbodega'] . ">" . $row['nombrebodega'] . "</option>");
+                                            }
+                                            mysqli_close($conn);
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <a href="../../bodegas/operaciones/index.php" class="btn btn-primary btn-block btn-flat" style="margin-top: 30px;"><i class="fas fa-edit"></i> Registrar Bodega</a>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <!-- select -->
+                                    <div class="form-group">
+                                        <label>Proveedor</label>
+                                        <select class="form-control" name="proveedor" required>
+                                            <option disabled selected>Selecciona una opción...</option>
+                                            <?php
+                                            require('../../../php/conexion.php');
+                                            $conn = new mysqli($servername, $username, $password, $dbname);
+
+                                            if ($conn->connect_error) {
+                                                die("La conexion ha fallado: " . $conn->connect_error);
+                                            }
+                                            $result = mysqli_query($conn, "SELECT * FROM proveedor");
+                                            while ($row = mysqli_fetch_array($result)) {
+                                                echo ("<option value=" . $row['idproveedor'] . ">" . $row['etiquetaproveedor'] . "  -  " . $row['nombreproveedor'] . "</option>");
+                                            }
+                                            mysqli_close($conn);
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <a href="../../proveedores/index.php" class="btn btn-primary btn-block btn-flat" style="margin-top: 30px;"><i class="fas fa-edit"></i> Registrar Proveedor</a>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-cubes"></i></span>
+                                        </div>
+                                        <input type="number" class="form-control" placeholder="Precio de compra" required name="preciocompra">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-cubes"></i></span>
+                                        </div>
+                                        <input type="number" class="form-control" placeholder="Precio de venta" required name="precioventa">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-cubes"></i></span>
+                                        </div>
+                                        <input type="number" class="form-control" placeholder="Stock inicial" required name="pstock">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="archivo" name="archivo" required>
+                                            <label class="custom-file-label" for="customFile">Subir Imagen...</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="submit" class="btn btn-block btn-outline-primary" name="submit" placeholder="Registrar">
+                            <br>
+                            <?php
+                            include 'registrarproducto.php';
+                            ?>
+                        </form>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Alta Masiva de productos</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <form method="post">
+                                    <input type="hidden" name="plantilla" value="../../../assets/plantillas/subirproductoventa.xlsx">
+                                    <button type="submit" class="btn btn-outline-primary btn-block btn-flat" name="descargar"><i class="fas fa-download"></i> Descargar plantilla...</button>
+                                </form>
+                            </div>
+                            <div class="col-md-6">
+                                <form action="altamasiva.php" method="post" enctype="multipart/form-data">
+                                    <input type="file" name="subirarchivo">
+                                    <button type="submit" class="btn btn-outline-primary btn-block btn-flat"><i class="fas fa-upload"></i> Cargar archivo...</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Productos Registrados</h3>
+                    </div>
                     <div class="card-body">
                         <table id="example1" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>ID Usuario</th>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Usuario</th>
-                                    <th>Rol</th>
+                                    <th>Nombre del Producto</th>
+                                    <th>Bodega</th>
+                                    <th>Proveedor</th>
+                                    <th>Precio Compra</th>
+                                    <th>Precio Venta</th>
+                                    <th>Stock</th>
                                     <th>Operaciones</th>
                                 </tr>
                             </thead>
@@ -322,18 +515,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 if ($conn->connect_error) {
                                     die("La conexion ha fallado: " . $conn->connect_error);
                                 }
-                                $result = mysqli_query($conn, "SELECT * FROM usuarios ORDER BY idusuario");
+                                $result = mysqli_query($conn, "SELECT *
+                                FROM ((inventario_venta INNER JOIN bodegas ON inventario_venta.idbodega = bodegas.idbodega) INNER JOIN proveedor ON inventario_venta.idproveedor=proveedor.idproveedor)
+                                ORDER BY idproductoventa;");
                                 while ($row = mysqli_fetch_array($result)) {
                                     echo ("<tr>");
-                                    echo ("<td>" . $row['idusuario'] . "</td>");
-                                    echo ("<td>" . $row['nombre'] . "</td>");
-                                    echo ("<td>" . $row['apellido'] . "</td>");
-                                    echo ("<td>" . $row['nombreusuario'] . "</td>");
-                                    echo ("<td>" . $row['idpermisos'] . "</td>");
+                                    echo ("<td>" . $row['nombreproducto'] . "</td>");
+                                    echo ("<td>" . $row['nombrebodega'] . "</td>");
+                                    echo ("<td>" . $row['nombreproveedor'] . "</td>");
+                                    echo ("<td> $&nbsp;" . $row['precio_compra'] . "</td>");
+                                    echo ("<td> $&nbsp;" . $row['precio_venta'] . "</td>");
+                                    echo ("<td>" . $row['stock'] . "</td>");
                                     echo ("<td class='text-center'>");
                                     echo ("<div class='btn-group btn-group-sm'>");
-                                    echo ("<a href='editar.php?id=" . $row['idusuario'] . "' class='btn btn-info'><i class='fas fa-eye'> Editar</i></a>");
-                                    echo ("<a href='borrar.php?id=" . $row['idusuario'] . "' class='btn btn-danger'><i class='fas fa-trash'> Eliminar</i></a>");
+                                    echo ("<a href='editar.php?id=" . $row['idproductoventa'] . "' class='btn btn-info'><i class='fas fa-eye'> Editar</i></a>");
+                                    echo ("<a href='borrar.php?id=" . $row['idproductoventa'] . "' class='btn btn-danger'><i class='fas fa-trash'> Eliminar</i></a>");
                                     echo ("</div>");
                                     echo ("</td>");
                                 }
@@ -342,11 +538,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>ID Usuario</th>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Usuario</th>
-                                    <th>Rol</th>
+                                    <th>Nombre del Producto</th>
+                                    <th>Bodega</th>
+                                    <th>Proveedor</th>
+                                    <th>Precio Compra</th>
+                                    <th>Precio Venta</th>
+                                    <th>Stock</th>
                                     <th>Operaciones</th>
                                 </tr>
                             </tfoot>
@@ -355,8 +552,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <!-- /.card-body -->
                 </div>
                 <!-- /.card -->
-
-
             </div>
             <!-- /.content -->
         </div>
@@ -376,10 +571,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <footer class="main-footer">
             <!-- To the right -->
             <div class="float-right d-none d-sm-inline">
-                Anything you want
+                uni.ueh.edu.mx
             </div>
             <!-- Default to the left -->
-            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+            <strong>Universidad Euro Hispanoamericana &copy; 2023</strong>
         </footer>
     </div>
     <!-- ./wrapper -->
@@ -394,7 +589,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="../../../js/adminlte/adminlte.min.js"></script>
     <!-- overlayScrollbars -->
     <script src="../../../plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-
+    <!-- ChartJS -->
+    <script src="../../../plugins/chart.js/Chart.min.js"></script>
+    <!-- bs-custom-file-input -->
+    <script src="../../../plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
     <!-- DataTables  & Plugins -->
     <script src="../../../plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="../../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
@@ -410,6 +608,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="../../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
     <script>
+        $(function() {
+            bsCustomFileInput.init();
+        });
+
         $(function() {
             $("#example1").DataTable({
                 "responsive": true,
