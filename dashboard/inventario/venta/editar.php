@@ -1,31 +1,6 @@
 <?php
-// Verifica que se ha enviado el formulario y que se ha especificado un archivo para descargar
-if (isset($_POST['descargar']) && !empty($_POST['plantilla'])) {
-    // Obtiene la ubicación del archivo
-    $file = $_POST['plantilla'];
-
-    // Verifica que el archivo exista y sea accesible para la descarga
-    if (file_exists($file)) {
-        // Establece las cabeceras HTTP necesarias para que el navegador entienda que se está descargando un archivo
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename=' . basename($file));
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($file));
-
-        // Lee y envía el archivo al navegador
-        readfile($file);
-        exit;
-    } else {
-        // Si el archivo no existe, muestra un mensaje de error
-        echo "El archivo no se encuentra disponible para descargar.";
-    }
-}
+$idproducto = $_GET['id'];
 ?>
-
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -50,7 +25,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="../../../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 </head>
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini sidebar-collapse">
     <div class="wrapper">
 
         <!-- Navbar -->
@@ -96,7 +71,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell"></i>
-                        <span class="badge badge-primary navbar-badge">15</span>
+                        <span class="badge badge-warning navbar-badge">15</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                         <span class="dropdown-header">15 Notifications</span>
@@ -258,7 +233,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="../institucional/index.php" class="nav-link">
+                                    <a href="#" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Institucional</p>
                                     </a>
@@ -332,222 +307,136 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <!-- Input addon -->
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Registrar producto</h3>
+                        <h3 class="card-title">Editar producto</h3>
                     </div>
                     <div class="card-body">
-                        <form method="post" enctype="multipart/form-data">
-                            <h5>Datos del producto:</h5>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-file-signature"></i></span>
+                        <form action="scripteditar.php?id=<?php echo $idproducto ?>" method="post" enctype="multipart/form-data">
+                            <?php
+                            require('../../../php/conexion.php');
+                            $conn = new mysqli($servername, $username, $password, $dbname);
+                            if ($conn->connect_error) {
+                                die("La conexion ha fallado: " . $conn->connect_error);
+                            }
+                            $sql = "SELECT * FROM inventario_venta WHERE idproductoventa=$idproducto";
+                            $result = mysqli_query($conn, $sql);
+
+                            while ($row = mysqli_fetch_array($result)) {
+                            ?>
+                                <h5>Datos del producto:</h5>
+                                <h6>Nombre del producto:</h6>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-file-signature"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Nombre del producto" required name="pnombreact" value="<?php echo $row['nombreproducto']; ?>">
                                 </div>
-                                <input type="text" class="form-control" placeholder="Nombre del producto" required name="pnombre">
-                            </div>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-file"></i></span>
+                                <h6>Descripción del producto:</h6>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-file"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Descripcion (70 caracteres máximo)" required name="pdescripcionact" value="<?php echo $row['descripcionproducto']; ?>">
                                 </div>
-                                <input type="text" class="form-control" placeholder="Descripcion (70 caracteres máximo)" required name="pdescripcion">
-                            </div>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                <h6>Código de barras o etiqueta:</h6>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Código de barras o Etiqueta" required name="pcodigoact" value="<?php echo $row['codigoproducto'] ?>">
+                                    <br>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Código de barras o Etiqueta" required name="pcodigo">
-                            </div>
+                                <?php echo "<center><img alt='testing' src='../../../php/barcode.php?codetype=code39&size=50&text=" . $row['codigoproducto'] . "&print=true'/></center>"; ?>
 
 
-                            <div class="row">
-                                <div class="col-sm-10">
+                                <div class="col-sm-12">
                                     <!-- select -->
                                     <div class="form-group">
                                         <label>Ubicación(Bodega)</label>
-                                        <select class="form-control" name="pbodega" required>
-                                            <option disabled selected>Selecciona una opción...</option>
+                                        <select class="form-control" name="pbodegact" required>
                                             <?php
-                                            require('../../../php/conexion.php');
-                                            $conn = new mysqli($servername, $username, $password, $dbname);
-
-                                            if ($conn->connect_error) {
-                                                die("La conexion ha fallado: " . $conn->connect_error);
+                                            $result2 = mysqli_query($conn, "SELECT * FROM bodegas");
+                                            while ($row2 = mysqli_fetch_array($result2)) {
+                                                echo "<option selected value=" . $row2['idbodega'] . ">" . $row2['nombrebodega'] . "</option>";
                                             }
-                                            $result = mysqli_query($conn, "SELECT * FROM bodegas");
-                                            while ($row = mysqli_fetch_array($result)) {
-                                                echo ("<option value=" . $row['idbodega'] . ">" . $row['nombrebodega'] . "</option>");
-                                            }
-                                            mysqli_close($conn);
                                             ?>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-2">
-                                    <a href="../../bodegas/operaciones/index.php" class="btn btn-primary btn-block btn-flat" style="margin-top: 30px;"><i class="fas fa-edit"></i> Registrar Bodega</a>
-                                </div>
-                            </div>
 
-
-                            <div class="row">
-                                <div class="col-sm-10">
+                                <div class="col-sm-12">
                                     <!-- select -->
                                     <div class="form-group">
                                         <label>Proveedor</label>
-                                        <select class="form-control" name="proveedor" required>
-                                            <option disabled selected>Selecciona una opción...</option>
+                                        <select class="form-control" name="proveedoract" required>
                                             <?php
-                                            require('../../../php/conexion.php');
-                                            $conn = new mysqli($servername, $username, $password, $dbname);
-
-                                            if ($conn->connect_error) {
-                                                die("La conexion ha fallado: " . $conn->connect_error);
+                                            $result3 = mysqli_query($conn, "SELECT * FROM proveedor");
+                                            while ($row3 = mysqli_fetch_array($result3)) {
+                                                echo ("<option selected value=" . $row3['idproveedor'] . ">" . $row3['etiquetaproveedor'] . "  -  " . $row3['nombreproveedor'] . "</option>");
                                             }
-                                            $result = mysqli_query($conn, "SELECT * FROM proveedor");
-                                            while ($row = mysqli_fetch_array($result)) {
-                                                echo ("<option value=" . $row['idproveedor'] . ">" . $row['etiquetaproveedor'] . "  -  " . $row['nombreproveedor'] . "</option>");
-                                            }
-                                            mysqli_close($conn);
                                             ?>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-2">
-                                    <a href="../../proveedores/index.php" class="btn btn-primary btn-block btn-flat" style="margin-top: 30px;"><i class="fas fa-edit"></i> Registrar Proveedor</a>
-                                </div>
-                            </div>
 
-
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h6>Precio de Compra:</h6>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                            </div>
+                                            <input type="number" class="form-control" placeholder="Precio de compra" required name="preciocompract" value="<?php echo $row['precio_compra'] ?>">
                                         </div>
-                                        <input type="number" class="form-control" placeholder="Precio de compra" required name="preciocompra" step="0.01" min=1>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h6>Precio de Venta:</h6>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                            </div>
+                                            <input type="number" class="form-control" placeholder="Precio de venta" required name="precioventact" value="<?php echo $row['precio_venta'] ?>">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
-                                        </div>
-                                        <input type="number" class="form-control" placeholder="Precio de venta" required name="precioventa" step="0.01" min=1>
-                                    </div>
-                                </div>
-                            </div>
+                                <br>
 
-                            <br>
-
-                            <div class="row">
-                                <div class="col-sm-6">
+                                <h6>Stock de productos:</h6>
+                                <div class="col-sm">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-cubes"></i></span>
                                         </div>
-                                        <input type="number" class="form-control" placeholder="Stock inicial" required name="pstock">
+                                        <input type="number" class="form-control" placeholder="Stock inicial" required name="pstockact" value="<?php echo $row['stock']; ?>">
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="archivo" name="archivo" required>
-                                            <label class="custom-file-label" for="customFile">Subir Imagen...</label>
+                                <br>
+                                <center>
+                                    <h6>Propiedades de imagen:</h6>
+                                </center>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group" style="margin-top:50px;">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="archivoact" name="archivoact">
+                                                <label class="custom-file-label" for="customFile"><?php echo $row['rutaimg']; ?></label>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="col-sm-6 text-center">
+                                        <h6>Imagen actual:</h6>
+                                        <img src="<?php echo $row['rutaimg']; ?>" alt="" style="border-style: solid; width:100px; height:120px;">
+                                    </div>
                                 </div>
-                            </div>
-                            <input type="submit" class="btn btn-block btn-outline-primary" name="submit" placeholder="Registrar">
-                            <br>
+                                <br>
+
+
+                                <input type="submit" class="btn btn-block btn-primary" name="submit" placeholder="Registrar">
+                                <br>
                             <?php
-                            include 'registrarproducto.php';
+                            }
+                            mysqli_close($conn);
                             ?>
                         </form>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Alta Masiva de productos</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <form method="post">
-                                    <input type="hidden" name="plantilla" value="../../../assets/plantillas/subirproductoventa.xlsx">
-                                    <button type="submit" class="btn btn-outline-primary btn-block btn-flat" name="descargar"><i class="fas fa-download"></i> Descargar plantilla...</button>
-                                </form>
-                            </div>
-                            <div class="col-md-6">
-                                <form action="altamasiva.php" method="post" enctype="multipart/form-data">
-                                    <input type="file" name="subirarchivo">
-                                    <button type="submit" class="btn btn-outline-primary btn-block btn-flat"><i class="fas fa-upload"></i> Cargar archivo...</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-
-
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Productos Registrados</h3>
-                    </div>
-                    <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Nombre del Producto</th>
-                                    <th>Bodega</th>
-                                    <th>Proveedor</th>
-                                    <th>Precio Compra</th>
-                                    <th>Precio Venta</th>
-                                    <th>Stock</th>
-                                    <th>Operaciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                require('../../../php/conexion.php');
-                                $conn = new mysqli($servername, $username, $password, $dbname);
-
-                                if ($conn->connect_error) {
-                                    die("La conexion ha fallado: " . $conn->connect_error);
-                                }
-                                $result = mysqli_query($conn, "SELECT *
-                                FROM ((inventario_venta INNER JOIN bodegas ON inventario_venta.idbodega = bodegas.idbodega) INNER JOIN proveedor ON inventario_venta.idproveedor=proveedor.idproveedor)
-                                ORDER BY idproductoventa;");
-                                while ($row = mysqli_fetch_array($result)) {
-                                    echo ("<tr>");
-                                    echo ("<td>" . $row['nombreproducto'] . "</td>");
-                                    echo ("<td>" . $row['nombrebodega'] . "</td>");
-                                    echo ("<td>" . $row['nombreproveedor'] . "</td>");
-                                    echo ("<td> $&nbsp;" . $row['precio_compra'] . "</td>");
-                                    echo ("<td> $&nbsp;" . $row['precio_venta'] . "</td>");
-                                    echo ("<td>" . $row['stock'] . "</td>");
-                                    echo ("<td class='text-center'>");
-                                    echo ("<div class='btn-group btn-group-sm'>");
-                                    echo ("<a href='editar.php?id=" . $row['idproductoventa'] . "' class='btn btn-info'><i class='fas fa-eye'> Editar</i></a>");
-                                    echo ("<a href='borrar.php?id=" . $row['idproductoventa'] . "' class='btn btn-danger'><i class='fas fa-trash'> Eliminar</i></a>");
-                                    echo ("</div>");
-                                    echo ("</td>");
-                                }
-                                mysqli_close($conn);
-                                ?>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Nombre del Producto</th>
-                                    <th>Bodega</th>
-                                    <th>Proveedor</th>
-                                    <th>Precio Compra</th>
-                                    <th>Precio Venta</th>
-                                    <th>Stock</th>
-                                    <th>Operaciones</th>
-                                </tr>
-                            </tfoot>
-                        </table>
                     </div>
                     <!-- /.card-body -->
                 </div>
